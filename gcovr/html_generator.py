@@ -170,12 +170,25 @@ def coverage_to_class(coverage, medium_threshold, high_threshold):
         return 'coverage-medium'
     return 'coverage-high'
 
+def branch_coverage_to_class(coverage, medium_threshold, high_threshold):
+    if coverage is None:
+        return 'branch-coverage-unknown'
+    if coverage == 0:
+        return 'branch-coverage-none'
+    if coverage < medium_threshold:
+        return 'branch-coverage-low'
+    if coverage < high_threshold:
+        return 'branch-coverage-medium'
+    return 'branch-coverage-high'
+
 
 class RootInfo:
 
     def __init__(self, options):
         self.medium_threshold = options.html_medium_threshold
         self.high_threshold = options.html_high_threshold
+        self.branch_medium_threshold = options.html_branch_medium_threshold
+        self.branch_high_threshold = options.html_branch_high_threshold
         self.details = options.html_details
         self.relative_anchors = options.relative_anchors
 
@@ -205,7 +218,7 @@ class RootInfo:
         self.branches['total'] = branch_total
         coverage = calculate_coverage(branch_covered, branch_total, nan_value=None)
         self.branches['coverage'] = '-' if coverage is None else coverage
-        self.branches['class'] = self._coverage_to_class(coverage)
+        self.branches['class'] = self._branch_coverage_to_class(coverage)
 
     def calculate_line_coverage(self, covdata):
         line_total = 0
@@ -240,7 +253,7 @@ class RootInfo:
             'total': branches_total,
             'exec': branches_exec,
             'coverage': '-' if branch_coverage is None else branch_coverage,
-            'class': self._coverage_to_class(branch_coverage),
+            'class': self._branch_coverage_to_class(branch_coverage),
         }
 
         display_filename = (
@@ -262,6 +275,9 @@ class RootInfo:
     def _coverage_to_class(self, coverage):
         return coverage_to_class(coverage, self.medium_threshold, self.high_threshold)
 
+    def _branch_coverage_to_class(self, coverage):
+        return branch_coverage_to_class(coverage, self.branch_medium_threshold, self.branch_high_threshold)
+
 
 #
 # Produce an HTML report
@@ -270,6 +286,8 @@ def print_html_report(covdata, output_file, options):
     css_data = CssRenderer.render(options)
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
+    branch_medium_threshold = options.html_branch_medium_threshold
+    branch_high_threshold = options.html_branch_high_threshold
 
     data = {}
     root_info = RootInfo(options)
@@ -277,6 +295,9 @@ def print_html_report(covdata, output_file, options):
 
     data['COVERAGE_MED'] = medium_threshold
     data['COVERAGE_HIGH'] = high_threshold
+    data['BRANCH_COVERAGE_MED'] = branch_medium_threshold
+    data['BRANCH_COVERAGE_HIGH'] = branch_high_threshold
+    
 
     self_contained = options.html_self_contained
     if self_contained is None:
@@ -366,7 +387,7 @@ def print_html_report(covdata, output_file, options):
         data['branches'] = branches
 
         branches['total'], branches['exec'], branches['coverage'] = cdata.branch_coverage()
-        branches['class'] = coverage_to_class(branches['coverage'], medium_threshold, high_threshold)
+        branches['class'] = branch_coverage_to_class(branches['coverage'], branch_medium_threshold, branch_high_threshold)
         branches['coverage'] = '-' if branches['coverage'] is None else branches['coverage']
 
         lines = dict()
