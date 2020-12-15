@@ -187,8 +187,8 @@ class RootInfo:
     def __init__(self, options):
         self.medium_threshold = options.html_medium_threshold
         self.high_threshold = options.html_high_threshold
-        self.branch_medium_threshold = options.html_branch_medium_threshold
-        self.branch_high_threshold = options.html_branch_high_threshold
+        self.medium_threshold_branch = options.html_medium_threshold_branch
+        self.high_threshold_branch = options.html_high_threshold_branch
         self.details = options.html_details
         self.relative_anchors = options.relative_anchors
 
@@ -276,7 +276,7 @@ class RootInfo:
         return coverage_to_class(coverage, self.medium_threshold, self.high_threshold)
 
     def _branch_coverage_to_class(self, coverage):
-        return branch_coverage_to_class(coverage, self.branch_medium_threshold, self.branch_high_threshold)
+        return branch_coverage_to_class(coverage, self.medium_threshold_branch, self.high_threshold_branch)
 
 
 #
@@ -284,10 +284,14 @@ class RootInfo:
 #
 def print_html_report(covdata, output_file, options):
     css_data = CssRenderer.render(options)
+# TODO her or in option parser in main
+#    if line not set use default
+#    if branch not set use default
+
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
-    branch_medium_threshold = options.html_branch_medium_threshold
-    branch_high_threshold = options.html_branch_high_threshold
+    medium_threshold_branch = options.html_medium_threshold_branch
+    high_threshold_branch = options.html_high_threshold_branch
 
     data = {}
     root_info = RootInfo(options)
@@ -295,8 +299,8 @@ def print_html_report(covdata, output_file, options):
 
     data['COVERAGE_MED'] = medium_threshold
     data['COVERAGE_HIGH'] = high_threshold
-    data['BRANCH_COVERAGE_MED'] = branch_medium_threshold
-    data['BRANCH_COVERAGE_HIGH'] = branch_high_threshold
+    data['BRANCH_COVERAGE_MED'] = medium_threshold_branch
+    data['BRANCH_COVERAGE_HIGH'] = high_threshold_branch
     
 
     self_contained = options.html_self_contained
@@ -387,7 +391,7 @@ def print_html_report(covdata, output_file, options):
         data['branches'] = branches
 
         branches['total'], branches['exec'], branches['coverage'] = cdata.branch_coverage()
-        branches['class'] = branch_coverage_to_class(branches['coverage'], branch_medium_threshold, branch_high_threshold)
+        branches['class'] = branch_coverage_to_class(branches['coverage'], medium_threshold_branch, high_threshold_branch)
         branches['coverage'] = '-' if branches['coverage'] is None else branches['coverage']
 
         lines = dict()

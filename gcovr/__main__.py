@@ -183,17 +183,30 @@ def main(args=None):
             options.html_medium_threshold, options.html_high_threshold)
         sys.exit(1)
 
-    if options.html_branch_medium_threshold == 0:
+    if options.html_medium_threshold_branch == 0:
         logger.error(
-            "value of --html-branch-medium-threshold= should not be zero.")
+            "value of --html-medium-threshold-branch= should not be zero.")
         sys.exit(1)
 
-    if options.html_branch_medium_threshold > options.html_branch_high_threshold:
+    if options.html_medium_threshold_branch != None and options.html_high_threshold_branch != None :
+        if options.html_medium_threshold_branch > options.html_high_threshold_branch:
+            logger.error(
+                "value of --html-medium-threshold-branch={} should be\n"
+                "lower than or equal to the value of --html-high-threshold-branch={}.",
+                options.html_medium_threshold_branch, options.html_high_threshold_branch)
+            sys.exit(1)
+    if options.html_medium_threshold_branch == 0:
         logger.error(
-            "value of --html-branch-medium-threshold={} should be\n"
-            "lower than or equal to the value of --html-branch-high-threshold={}.",
-            options.html_branch_medium_threshold, options.html_branch_high_threshold)
+            "value of --html-medium-threshold-branch= should not be zero.")
         sys.exit(1)
+
+    if options.html_medium_threshold_line != None and options.html_high_threshold_line != None :
+        if options.html_medium_threshold_line > options.html_high_threshold_line:
+            logger.error(
+                "value of --html-medium-threshold-line={} should be\n"
+                "lower than or equal to the value of --html-high-threshold-line={}.",
+                options.html_medium_threshold_line, options.html_high_threshold_line)
+            sys.exit(1)
 
 
     if options.html_tab_size < 1:
@@ -304,6 +317,9 @@ def main(args=None):
         collect_coverage_from_gcov(covdata, options, logger)
 
     logger.verbose_msg("Gathered coveraged data for {} files", len(covdata))
+
+    for key, val in sorted(options_dict.items()):
+        print(key,val)
 
     # Print reports
     print_reports(covdata, options, logger)
