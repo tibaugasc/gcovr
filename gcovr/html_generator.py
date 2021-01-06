@@ -170,6 +170,7 @@ def coverage_to_class(coverage, medium_threshold, high_threshold):
         return 'coverage-medium'
     return 'coverage-high'
 
+
 def branch_coverage_to_class(coverage, medium_threshold, high_threshold):
     if coverage is None:
         return 'branch-coverage-unknown'
@@ -301,7 +302,6 @@ def print_html_report(covdata, output_file, options):
     data['COVERAGE_HIGH'] = high_threshold
     data['BRANCH_COVERAGE_MED'] = medium_threshold_branch
     data['BRANCH_COVERAGE_HIGH'] = high_threshold_branch
-    
 
     self_contained = options.html_self_contained
     if self_contained is None:

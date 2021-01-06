@@ -51,7 +51,6 @@ def check_input_file(value):
     return os.path.abspath(value)
 
 
-
 def check_output_file(value):
     r"""
     Check if the output file can be created.
@@ -726,7 +725,7 @@ GCOVR_CONFIG_OPTIONS = [
              "only high and low coverage. Default is HIGH.",
         default=None,
     ),
-        GcovrConfigOption(
+    GcovrConfigOption(
         "html_medium_threshold_line", ["--html-medium-threshold-line"],
         group="output_options",
         metavar="MEDIUM_LINE",

@@ -188,7 +188,7 @@ def main(args=None):
             "value of --html-medium-threshold-branch= should not be zero.")
         sys.exit(1)
 
-    if options.html_medium_threshold_branch != None and options.html_high_threshold_branch != None :
+    if options.html_medium_threshold_branch and options.html_high_threshold_branch:
         if options.html_medium_threshold_branch > options.html_high_threshold_branch:
             logger.error(
                 "value of --html-medium-threshold-branch={} should be\n"
@@ -200,14 +200,13 @@ def main(args=None):
             "value of --html-medium-threshold-branch= should not be zero.")
         sys.exit(1)
 
-    if options.html_medium_threshold_line != None and options.html_high_threshold_line != None :
+    if options.html_medium_threshold_line and options.html_high_threshold_line:
         if options.html_medium_threshold_line > options.html_high_threshold_line:
             logger.error(
                 "value of --html-medium-threshold-line={} should be\n"
                 "lower than or equal to the value of --html-high-threshold-line={}.",
                 options.html_medium_threshold_line, options.html_high_threshold_line)
             sys.exit(1)
-
 
     if options.html_tab_size < 1:
         logger.error(
@@ -318,8 +317,9 @@ def main(args=None):
 
     logger.verbose_msg("Gathered coveraged data for {} files", len(covdata))
 
+    # debugg
     for key, val in sorted(options_dict.items()):
-        print(key,val)
+        print(key, val)
 
     # Print reports
     print_reports(covdata, options, logger)
